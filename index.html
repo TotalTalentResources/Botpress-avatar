@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Botpress Avatar Viewer</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+    light.position.set(0, 20, 0);
+    scene.add(light);
+
+    const loader = new THREE.GLTFLoader();
+    loader.load('https://models.readyplayer.me/68daba2395c1f61500686ad3.glb', function(gltf) {
+      scene.add(gltf.scene);
+      gltf.scene.scale.set(1.5, 1.5, 1.5);
+      gltf.scene.position.set(0, -1.5, 0);
+      camera.position.z = 3;
+      animate();
+    }, undefined, function(error) {
+      console.error('Error loading GLB:', error);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
